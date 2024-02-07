@@ -11,7 +11,7 @@ button = st.button("Get Answer")
 # ボタンがクリックされたときの処理
 if button:
     # FastAPIサーバーに質問を送信し、応答を取得 ローカル環境 http://localhost:8000/answer
-    response = requests.post("http://118.159.34.190:10000/answer", json={"text": user_input})
+    response = requests.post("https://baseball-rule-chatbot.onrender.com:10000/answer", json={"text": user_input})
     answer = response.json().get("answer", "No answer available.")
     
     # 応答を表示
