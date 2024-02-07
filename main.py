@@ -1,9 +1,31 @@
-# main.py
+#main.py
+
+#windows
+#import sqlite3
+
+import pysqlite3.dbapi2 as sqlite3
+import sys
+sys.modules['sqlite3'] = sqlite3
+
 from fastapi import FastAPI
 from pydantic import BaseModel
 
-app = FastAPI()
+import os
+import openai
 
+#必要なライブラリをインポート
+from langchain_openai import OpenAIEmbeddings
+from langchain_community.vectorstores import Chroma
+import chromadb
+from chromadb.config import Settings
+
+# OpenAI を使うためのインポート
+from langchain_openai import ChatOpenAI
+
+# 質問と回答の取得に使用するチェーンをインポート
+from langchain.chains import RetrievalQA
+
+app = FastAPI()
 class Question(BaseModel):
     text: str
 
@@ -11,16 +33,9 @@ class Question(BaseModel):
 #key = 'key'
 #os.environ['OPENAI_API_KEY'] = key
 
-import os
-import openai
+
 # openai.api_keyにOpenAIのAPIキーを入れる
 openai.api_key = os.environ['OPENAI_API_KEY']
-
-#必要なライブラリをインポート
-from langchain.embeddings.openai import OpenAIEmbeddings
-from langchain.vectorstores import Chroma
-import chromadb
-from chromadb.config import Settings
 
 persist_directory = 'persist_directory'
 client = chromadb.PersistentClient(path=persist_directory)
@@ -37,14 +52,8 @@ db2 = Chroma(
 # データベースからretriever作成
 retriever = db2.as_retriever(search_kwargs={"k": 3}) # Topkもここの引数で指定できる
 
-# OpenAI を使うためのインポート
-from langchain.llms import OpenAI
-
 # LLM ラッパーの初期化
-llm = OpenAI(model_name="gpt-3.5-turbo", temperature=0, max_tokens=500)
-
-# 質問と回答の取得に使用するチェーンをインポート
-from langchain.chains import RetrievalQA
+llm = ChatOpenAI(model_name="gpt-3.5-turbo", temperature=0, max_tokens=500)
 
 # チェーンを作り、それを使って質問に答える
 qa = RetrievalQA.from_chain_type(llm=llm, chain_type="stuff", retriever=retriever)
