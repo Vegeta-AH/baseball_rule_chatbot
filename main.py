@@ -2,8 +2,9 @@
 
 #windows
 #import sqlite3
-
+#Linux systemの場合はrequirements.txt に pysqlite3-binary を指定
 import pysqlite3.dbapi2 as sqlite3
+
 import sys
 sys.modules['sqlite3'] = sqlite3
 
