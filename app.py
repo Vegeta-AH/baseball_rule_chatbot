@@ -10,8 +10,8 @@ button = st.button("Get Answer")
 
 # ボタンがクリックされたときの処理
 if button:
-    # FastAPIサーバーに質問を送信し、応答を取得
-    response = requests.post("http://0.0.0.0:10000/answer", json={"text": user_input})
+    # FastAPIサーバーに質問を送信し、応答を取得 ローカル環境 http://localhost:8000/answer
+    response = requests.post("http://localhost:8000/answer", json={"text": user_input})
     answer = response.json().get("answer", "No answer available.")
     
     # 応答を表示
