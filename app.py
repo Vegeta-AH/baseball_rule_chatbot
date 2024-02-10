@@ -8,11 +8,16 @@ st.title("野球AIチャットボット")
 user_input = st.text_input("Enter a question:")
 button = st.button("Get Answer")
 
+
 # ボタンがクリックされたときの処理
 if button:
     # FastAPIサーバーに質問を送信し、応答を取得 ローカル環境 http://localhost:8000/answer
+    #response = requests.post("http://localhost:8000/answer", json={"text": user_input})
     response = requests.post("https://baseball-rule-chatbot.onrender.com/answer", json={"text": user_input})
     answer = response.json().get("answer", "No answer available.")
+
+    #バーンを表示
+    st.balloons()
     
     # 応答を表示
     st.write(f"Answer: {answer}")
